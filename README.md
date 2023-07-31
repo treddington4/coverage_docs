@@ -1,4 +1,36 @@
 ![Coverage](https://img.shields.io/badge/Coverage-Lines%2090%25-brightgreen)
+```bash
+grep -o -P '(?<=coverFile"><a href=")[^"]+|(?<=coverPerLo">)[0-9.]+|(?<=coverPerHi">)[0-9.]+|(?<=coverNumLo">)[0-9]+|(?<=coverNumHi">)[0-9]+' lcov-report/index.html | {
+    while read -r directory; do
+        read -r line_coverage_per
+        read -r line_coverage_high
+        read -r function_coverage_per
+        read -r function_coverage_high
+
+    directory=${directory//\/index.html/}
+    if [[ "$directory" != *"test"* ]] && [[ "$directory" != *"repo_name"* ]]; then
+        line_color=red
+        if (( $(echo "$line_coverage_per > 80 && line_coverage_per < 90" |bc -l) )); then
+        line_color=amber
+        elif (( $(echo "$line_coverage_per >= 90" |bc -l) )); then
+        line_color=brightgreen
+        fi
+        function_color=red
+        if (( $(echo "$function_coverage_per > 80 && function_coverage_per < 90" |bc -l) )); then
+        function_color=amber
+        elif (( $(echo "$function_coverage_per >= 90" |bc -l) )); then
+        function_color=brightgreen
+        fi
+        line_badge_url="https://img.shields.io/badge/Line%20Coverage-$line_coverage_per%25-$line_color"
+        function_badge_url="https://img.shields.io/badge/Function%20Coverage-$function_coverage_per%25-$function_color"
+        # line_coverage=$((line_coverage_low > 0.0 ? line_coverage_low : line_coverage_high))
+        # function_coverage=$((function_coverage_low > 0.0 ? function_coverage_low : function_coverage_high))
+        echo "$directory: ![Line Coverage]($line_badge_url) ![Function Coverage]($function_badge_url)"
+
+    fi
+    done
+}
+```
 # Gcov Example
 
 **Use [Gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) + [LCOV](http://ltp.sourceforge.net/coverage/lcov.php) / [gcovr](https://github.com/gcovr/gcovr) to show C/C++ projects code coverage results.**
