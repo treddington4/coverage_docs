@@ -1,3 +1,4 @@
+![Coverage](https://img.shields.io/badge/Coverage-Lines%2090%25-brightgreen)
 # Gcov Example
 
 **Use [Gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) + [LCOV](http://ltp.sourceforge.net/coverage/lcov.php) / [gcovr](https://github.com/gcovr/gcovr) to show C/C++ projects code coverage results.**
