@@ -30,7 +30,36 @@ jobs:
       run: |
         make lcov-report
         make gcovr-report
+        
+    - name: Create coverage badges
+      run: |
+        # Extract line and function coverage percentages (as shown in the previous step)
 
+        line_coverage=$(grep -oP "(?<=lines......: )\d+\.\d+" lcov-report/lcov.info)
+        function_coverage=$(grep -oP "(?<=functions..: )\d+\.\d+" lcov-report/lcov.info)
+
+        # Generate badge URLs
+        line_badge_url="https://img.shields.io/badge/Lines%20Coverage-$line_coverage%25-brightgreen"
+        function_badge_url="https://img.shields.io/badge/Functions%20Coverage-$function_coverage%25-brightgreen"
+
+        echo "Line coverage: $line_coverage"
+        echo "Function coverage: $function_coverage"
+        echo "Line coverage badge URL: $line_badge_url"
+        echo "Function coverage badge URL: $function_badge_url"
+    - name: Update README
+      run: |
+          # Extract line and function coverage percentages (as shown in the previous step)
+
+          line_coverage=$(grep -oP "(?<=lines......: )\d+\.\d+" lcov-report/lcov.info)
+          function_coverage=$(grep -oP "(?<=functions..: )\d+\.\d+" lcov-report/lcov.info)
+          
+          # Generate badge URLs
+          line_badge_url="https://img.shields.io/badge/Lines%20Coverage-$line_coverage%25-brightgreen"
+          function_badge_url="https://img.shields.io/badge/Functions%20Coverage-$function_coverage%25-brightgreen"
+
+          # Update README.md with the badge URLs
+          sed -i "s|<BADGE-LINES>|![Line Coverage]($line_badge_url)|" README.md
+          sed -i "s|<BADGE-FUNCTIONS>|![Function Coverage]($function_badge_url)|" README.md
     - name: Upload lcov and gcovr reports
       if: github.ref == 'refs/heads/main'
       run: |
